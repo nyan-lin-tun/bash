@@ -1,0 +1,155 @@
+#!/bin/bash
+figlet WELCOME
+cowthink $(date)
+echo "Checking the Operating System----------------------------"
+if [ $(cat /etc/redhat-release | awk '{print $1}') = CentOS ]
+	then
+		echo "Operating System = $(cat /etc/redhat-release | awk '{print $1}') "
+		echo "Checking the user is Root or not!--------------------"
+	elif
+		[ $(cat /etc/redhat-release | awk '{print $1}') = Fedora ]
+ 		then
+			echo "Operating System = $(cat /etc/redhat-release | awk '{print $1}') "
+			echo "Checking the user is Root or not!--------------------"
+	elif
+		[ $(cat /etc/redhat-release | awk '{print $1,$2}') = "Red Hat" ]
+                then
+                        echo "Operating System = $(cat /etc/redhat-release | awk '{print $1}') "
+                        echo "Checking the user is Root or not!--------------------"
+	else
+		echo "Sorry! My Script is only for Fedora,CentOS and Red Hat."
+fi
+if [ $(id -u | awk '{print $1}') = 0 ]
+        then
+                echo "Root user!"
+                echo "Checking the system architecture----------------------------------------------"
+        else
+                echo "Not Root User!!"
+                exit
+fi
+
+if [ $(uname -p) = x86_64 ]; then
+	echo -e "System Architecture is $(uname -p)"
+	echo "Check = OK"
+elif [ $(uname -p) = i386 ]; then
+	echo -e "System Architecture is $(uname -p)"
+	echo "Check = OK"
+elif [ $(uname -p) = i486 ]; then
+	echo -e "System Architecture is $(uname -p)"
+	echo "Check = OK"
+elif [ $(uname -p) = i586 ]; then
+        echo -e "System Architecture is $(uname -p)"	
+	echo "Check = OK"
+elif [ $(uname -p) = i686 ]; then
+        echo -e "System Architecture is $(uname -p)"
+	echo "Check = OK"
+else
+	echo -e "System Architecture is $(uname -p)"
+	echo "Check = OK"
+fi
+echo "Welcome to Script"
+echo "Type -help- to view the Descriptrion"
+help(){
+	echo "install_apache to install apache web server"
+	echo "install_php to install php"
+	echo "install_mariadb to install mariadb"
+	echo "install_firewall to install firewall"
+	echo "install_antivirus to install antivirus"
+	echo "install_rootkit_hunter to install rootkit hunter"
+}
+install_apache(){
+	yum update -y
+	yum install epel-release -y
+	echo "Installing Apache web server!!"
+	yum intall http -y
+	systemctl start httpd
+	systemctl enable httpd
+	echo "Apache web server installation complete"
+}
+install_php(){
+	echo "Installing PHP"
+	yum install php php-mysql php-mbstring php-mcrypt php-pspell php-gd -y
+	systemctl restart httpd	
+	echo "PHP installation complete"
+}
+install_mariadb(){
+	yum install mariadb mariadb-server -y
+	systemctl start mariadb
+	systemctl enable mariadb
+read -p "Define MYSQL root user password: "mysqlrootpwd
+SECURE_MYSQL=$(expext -c "
+
+set timeout 10
+spawn mysql_secure_installation
+
+expect \"Enter current password for root (Enter for none):\"
+send \"$MYSQL\r\"
+
+expect \"Change the root password?\"
+send \"y\r\"
+
+expect \"New Password:\"
+send \"$mysqlrootpwd\r\"
+
+expect \"Re-enter new password:\"
+send \"$mysqlrootpwd\r\"
+
+expect \"Remove anonymous users?\"
+send \"y\r\"
+
+expect \"Disallow root login remotely?\"
+send \"y\r\"
+
+expect \"Remove test database and access to it?\"
+send \"y\r\"
+
+expect \"Reload privilege tables now?\"
+send \"y\r\"
+
+expect eof
+")
+	echo "Mariadb installarion complete"
+	echo "Installation Complete!"
+}
+install_firewall(){
+	echo "Installation firewall"
+	yum install firewalld -y
+	systemctl start firewalld
+	systemctl enable firewalld 
+	firewall-cmd --zone=public --add-service=http --permanent
+	firewall-cmd --zone=public --add-port=10000/tcp --permanent
+	firewall-cmd --reload
+	echo "Firewall installation complete"
+}
+install_antivirus(){
+	echo "Installation anti-virus"
+	yum install clamav clamav-update clamav-scanner -y
+	echo "Installation Complete"
+}
+intsall_rootkit_hunter(){
+	echo "Installation rootkit hunter"
+	yum install rkhunter -y
+	echo "Installation Complete"
+}
+while true
+do
+echo -n "shell>" & read input
+	case $input in
+	"-help-") help
+        ;;
+	"install_apache") install_apache
+	;;
+	"install_php") install_php
+        ;;
+	"install_mariadb") install_apache
+        ;;
+	"install_firewall") install_firewall
+	;;
+	"install_antivirus") install_anitvirus
+	;;
+	"install_rootkit_hunter") install_rootkit_hunter
+	;;
+	*) eval $input
+	;;
+	esac
+done
