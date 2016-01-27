@@ -1,0 +1,21 @@
+#!/bin/bash
+echo -ne ' Checking OS #####                     (25%)\r'
+sleep 1
+echo -ne ' Checking OS #########                 (50%)\r'
+sleep 1
+echo -ne ' Checking OS ############              (75%)\r'
+sleep 1
+echo -ne ' Checking OS #######################   (100%)\r'
+sleep 1
+echo -e '          ###OS Checking Complete###            '
+
+
+echo "Operating System = $(cat /etc/redhat-release | awk '{print $1}') "
+echo "System Architecture = $(uname -p)"
+echo "Kernal Version = $(uname -r)"
+if [ $(id -u | awk '{print $1}') = 0 ]
+        then
+                echo "User Level = Root User#"
+        else
+                echo "User Level = Normal User"
+fi      
