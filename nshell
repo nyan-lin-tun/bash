@@ -141,7 +141,7 @@ echo -n "shell>" & read input
 	;;
 	"install_php") install_php
         ;;
-	"install_mariadb") install_apache
+	"install_mariadb") install_mariadb
         ;;
 	"install_firewall") install_firewall
 	;;
