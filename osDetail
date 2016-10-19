@@ -9,8 +9,20 @@ echo -ne ' Checking OS #######################   (100%)\r'
 sleep 1
 echo -e '          ###OS Checking Complete###            '
 
-
-echo "Operating System = $(cat /etc/redhat-release | awk '{print $1}') "
+if [ $(cat /etc/redhat-release | awk '{print $1}') == "CentOS" ]
+        then
+                echo "Operating System = $(cat /etc/redhat-release | awk '{print $1}') "
+        elif
+                [ $(cat /etc/redhat-release | awk '{print $1}') == "Fedora" ]
+                then
+                        echo "Operating System = $(cat /etc/redhat-release | awk '{print $1}') "
+        elif
+                [ $(cat /etc/redhat-release | awk '{print $1}') == "Red Hat" ]
+                then
+                        echo "Operating System = $(cat /etc/redhat-release | awk '{print $1}') "
+        else
+                echo "Operating System = Not red hat base"
+fi
 echo "System Architecture = $(uname -p)"
 echo "Kernal Version = $(uname -r)"
 if [ $(id -u | awk '{print $1}') = 0 ]
